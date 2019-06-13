@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 const Header = (props) => {
-	console.log(props)
 	return (
 		<div>
 			<h1>{props.course}</h1>
@@ -11,7 +10,6 @@ const Header = (props) => {
 }
 
 const Content = (props) => {
-	console.log(props)
   return (
 		<div>				
 				<Part name={props.parts[0].name} exercises={props.parts[0].exercises} />		
@@ -22,7 +20,6 @@ const Content = (props) => {
 }
 
 const Part = (props) => {
-	console.log(props)
 	return (
 		<div>
 			<p>{props.name} {props.exercises}</p>
