@@ -4,7 +4,7 @@ const Person = (props) => {
 
   return (
     <div>
-      {props.name} {props.phoneNumber}
+      {props.name} {props.number}
     </div>
   )
 }
