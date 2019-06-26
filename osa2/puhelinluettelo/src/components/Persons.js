@@ -1,10 +1,16 @@
 import React from 'react';
 import Person from './Person'
 
-const Persons = (props) => {
-  const namesAndPhoneNumbers = () => props.personsToShow.map(person =>
-    <Person key={person.name} name={person.name} number={person.number}/>
+const Persons = ({personsToShow, deletePersonButton}) => {
+  console.log('props :', personsToShow);
+  const namesAndPhoneNumbers = () => personsToShow.map(person => 
+    <Person 
+    key={person.id} 
+    name={person.name} 
+    number={person.number} 
+    deletePersonButton={() => deletePersonButton(2)}/>
   )
+
   return (
     <div>
       {namesAndPhoneNumbers()}
