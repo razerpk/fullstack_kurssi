@@ -1,8 +1,7 @@
-import React from 'react';
+/*import React from 'react';
 import Person from './Person'
 
 const Persons = ({personsToShow, deletePersonButton}) => {
-  console.log('props :', personsToShow);
   const namesAndPhoneNumbers = () => personsToShow.map(person => 
     <Person 
     key={person.id} 
@@ -18,4 +17,4 @@ const Persons = ({personsToShow, deletePersonButton}) => {
   )
 }
 
-export default Persons
+export default Persons*/

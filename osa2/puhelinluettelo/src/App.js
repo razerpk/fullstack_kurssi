@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
-import Persons from './components/Persons';
+import Person from './components/Person';
 import personsService from './services/persons'
 
 const App = () => {
@@ -19,11 +19,20 @@ const App = () => {
         })
   }, [])
 
-  /* Add person into server */
+  /* Change existing persons number or add person into server*/
   const addPerson = (event) => {
     event.preventDefault()
-    if (personExists()){
-      window.alert(`Phonebook already has ${newName}`)
+    const found = personExists()
+    if (found !== undefined){
+      const updateNumber = window.confirm(`Phonebook already has ${newName}. Do you want to replace the old number with a new one?`)
+      if(updateNumber){
+        const changedPerson = { ...found, number: newPhoneNumber}
+        personsService
+          .update(found.id, changedPerson)
+            .then(returnedPerson => {
+              setPersons(persons.map(person => found.id !== person.id ? person : returnedPerson))
+            })
+      }
     }else {
       const nameObject = {
         name: newName,
@@ -39,10 +48,10 @@ const App = () => {
     }
   }
 
-  const personExists = () => persons.some((person) => person.name === newName)
+  const personExists = () => persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
 
+  /* Deletes person from server */
   const deletePersonButton = (id) =>{
-  
     personsService
       .deletePerson(id)
         .then(deletedObject => {
@@ -54,9 +63,26 @@ const App = () => {
   const handleNewPhoneNumberChange = (event) => setNewPhoneNumber(event.target.value)
   const handleFiltering = (event) => setShowAll(event.target.value)
 
+  /* Filters all persons who are not included */
   const personsToShow = showAll
   ? persons.filter((person) => person.name.toLowerCase().includes(showAll.toLowerCase()))
   : persons 
+
+  /* Creates person statistic rows from persons array */
+  const Persons = () => {
+    const namesAndPhoneNumbers = () => personsToShow.map(person => 
+      <Person 
+      key={person.id} 
+      name={person.name} 
+      number={person.number} 
+      deletePersonButton={() => deletePersonButton(person.id)}/>
+    )
+    return (
+      <div>
+        {namesAndPhoneNumbers()}
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -77,10 +103,11 @@ const App = () => {
       <h2>Numbers</h2>
       
       <div>
-        <Persons personsToShow={personsToShow} deletePersonButton={() => deletePersonButton(2)} />
+        {Persons()}
       </div>
     </div>
   )
 }
+
 
 export default App

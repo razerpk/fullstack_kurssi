@@ -1,9 +1,8 @@
 import React from 'react';
 
 const Person = ({ name, number, deletePersonButton}) => {
-console.log('deletePerson :', deletePersonButton);
   const areYouSure = () => {
-    if (window.confirm(`Do you really want to delete `))
+    if (window.confirm(`Do you really want to delete ${name}`))
       {deletePersonButton()}
   }
   return (
