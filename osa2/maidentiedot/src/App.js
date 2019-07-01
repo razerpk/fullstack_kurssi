@@ -1,57 +1,67 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import './App.css';
+import Country from './components/Country'
+import countriesServices from './services/countries'
 
 function App() {
+  const [ weather, setWeather] = useState([])
   const [ countries, setCountries] = useState([])
   const [ showAll, setShowAll] = useState('')
 
   useEffect(() => {
-    axios.get('https://restcountries.eu/rest/v2/all').then(response => {
-        console.log('promise fulfilled')
-        console.log('data', response.data)
-        setCountries(response.data)
-      })
+    countriesServices
+      .getAll()
+        .then(initialCountries => {
+          setCountries(initialCountries)
+        })
   }, [])
 
-  const handleInputChange = (event) => setShowAll(event.target.value) 
-
+  useEffect(() => {
+    countriesServices
+      .getAllWeather()
+        .then(InitialCountryWeather => {
+          setWeather(InitialCountryWeather)
+        })
+  }, [])
+  
   const countryInfos = () => {
-    if(countriesToShow.length > 10)
+    if(countriesToShow.length > 10) {
       return <div>Too many matches, specify filter</div>
-    else{
+    }
+    else if(countriesToShow.length > 1 && countriesToShow.length <= 10) {
       const show = () => countriesToShow.map(country => {
-        if(countriesToShow.length > 1 && countriesToShow.length < 10){
-          return (
-          <div key={country.name}> {country.name} <button>show</button></div>       
-          )
-        }else{
-          const countryLanguages = () => country.languages.map(language => 
+        return (
+        <Countrybutton
+        key={country.name} 
+        name={country.name} 
+        showCountryInformation={() => setShowAll(country.name)} 
+        />  
+        )
+      })
+      return (show())
+    }else {
+      const show = () => countriesToShow.map(country => {
+        const countryLanguages = () => country.languages.map(language => 
           <Language key={language.iso639_1} name={language.name}/>
-          )
-
+          )  
           return (
-            <div key={country.numericCode}>
+            <div key={country.name}>
               <Country 
               key={country.numericCode} 
               name={country.name} 
               capital={country.capital}
               population={country.population}
+              countryLanguages={countryLanguages()}
               flag={country.flag}
+              temp={weather.current.temp_c}
               />
-
-              <h3>languages</h3>
-              <ul>
-                {countryLanguages()}
-              </ul>
-              <img src={country.flag} alt='flag' width='30%' height='30%'></img>
             </div>
-          )
-        }
+          )      
       })
       return show()
-    }  
-  }
+    }
+  }  
 
   const countriesToShow = showAll
   ? countries.filter((country) => country.name.toLowerCase().includes(showAll.toLowerCase()))
@@ -63,7 +73,7 @@ function App() {
         Find countries:
         <input
         value={showAll} 
-        onChange={handleInputChange}
+        onChange={(event) => setShowAll(event.target.value)}
         />
       </div>
 
@@ -74,15 +84,15 @@ function App() {
   )
 }
 
-const Country = (props) => {
+const Countrybutton = (props) => {
   return (
-  <div>
-    <h1>{props.name}</h1>
-    <div>Capital {props.capital}</div>
-    <div>Population {props.population}</div>
-  </div>
-  )
+    <div>
+    {props.name}
+    <button onClick={props.showCountryInformation}>show</button>   
+    </div>   
+    )
 }
+
 const Language = ({name}) => <li>{name}</li>
 
 export default App;
