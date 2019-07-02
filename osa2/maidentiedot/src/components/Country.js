@@ -18,6 +18,8 @@ const Country = (props) => {
       <b>temperature: </b>
       {props.temp} Celsius
     </div>
+    <img src={props.icon} alt='icon' width='5%' height='5%'></img>
+    <div><b>wind</b> {props.wind} kph direction {props.windDirection}</div>
   </div>
   )
 }
