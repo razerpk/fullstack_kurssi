@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import './App.css';
 import Country from './components/Country'
 import countriesServices from './services/countries'
 import axios from 'axios'
